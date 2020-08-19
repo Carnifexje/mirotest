@@ -1,0 +1,44 @@
+spring:
+  application:
+    name: mirotest
+  main:
+    banner-mode: off
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: false
+  data:
+    rest:
+      max-page-size: 500
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driverClassName: org.h2.Driver
+    username: sa
+    password: password
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+
+
+server:
+  servlet:
+    context-path: /api
+
+zuul:
+  routes:
+    widgets:
+      path: /widgets
+      url: forward:/
+  ratelimit:
+    enabled: true
+    repository: jpa
+    default-policy-list:
+      - limit: 1000
+        refresh-interval: 60
+        type:
+          - origin
+    policy-list:
+      widgets:
+        - limit: 200
+          refresh-interval: 60
+          type:
+            - origin
+  strip-prefix: true
